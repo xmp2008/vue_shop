@@ -61,6 +61,7 @@ router.beforeEach((to, from, next) => {
     //登录页，允许访问，直接放行
     if (to.path === "/login") return next();
     const tokenStr = window.sessionStorage.getItem("token");
+    // console.log(tokenStr);
     //没有token强制跳转登录页
     if (!tokenStr) return next("/login");
     //有token允许访问

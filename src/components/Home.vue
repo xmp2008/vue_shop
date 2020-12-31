@@ -64,8 +64,8 @@ export default {
   },
   computed: {},
   created() {
-    this.getMenuList();
-    this.activePath = window.sessionStorage.getItem("activePath");
+    // this.getMenuList();
+    // this.activePath = window.sessionStorage.getItem("activePath");
   },
   mounted() {},
   methods: {
