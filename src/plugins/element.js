@@ -29,7 +29,13 @@ import {
     Tree,
     Select,
     Option,
-    Checkbox
+    Checkbox,
+    Dropdown,
+    DatePicker,
+    DropdownMenu,
+    DropdownItem,
+    RadioGroup,
+    Radio
 } from "element-ui";
 
 Vue.use(Button);
@@ -59,6 +65,12 @@ Vue.use(Tree);
 Vue.use(Select);
 Vue.use(Option);
 Vue.use(Checkbox);
+Vue.use(Dropdown);
+Vue.use(DatePicker);
+Vue.use(DropdownMenu);
+Vue.use(DropdownItem);
+Vue.use(RadioGroup);
+Vue.use(Radio);
 
 Vue.prototype.$message = Message;
 Vue.prototype.$confirm = MessageBox.confirm;

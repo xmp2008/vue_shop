@@ -14,23 +14,25 @@
       <el-aside :width="isCollapse ? '64px' :'200px'">
         <div class=" toggle-button" @click="toggleCollapse">|||</div>
         <!-- 侧边栏菜单区域 -->
-        <el-menu background-color="#313743" text-color="#fff" active-text-color="#359BFF" unique-opened :collapse="isCollapse" :collapse-transition="false" :router="true" :default-active="activePath">
+        <el-menu background-color="#313743" text-color="#fff" active-text-color="#359BFF" unique-opened
+                 :collapse="isCollapse" :collapse-transition="false" :router="true" :default-active="activePath">
           <!-- 一级菜单 -->
-          <el-submenu :index="item.id+''" v-for="item in menuList" :key="item.id">
+          <el-submenu :index="item.id" v-for="item in menuList" :key="item.id">
             <!-- 一级菜单模板区 -->
             <template slot="title">
               <!-- 一级菜单图标 -->
               <i :class="iconObjects[item.id]"></i>
               <!-- 文本 -->
-              <span>{{item.authName}}</span>
+              <span>{{ item.title }}</span>
             </template>
             <!-- 二级菜单 -->
-            <el-menu-item :index="'/'+subitem.path" v-for="subitem in item.children" :key="subitem.id" @click="saveNavState('/'+subitem.path)">
+            <el-menu-item :index="subitem.href" v-for="subitem in item.childs" :key="subitem.id"
+                          @click="saveNavState(subitem.href)">
               <template slot="title">
                 <!-- 二级菜单图标 -->
                 <i class="el-icon-menu"></i>
                 <!-- 文本 -->
-                <span>{{subitem.authName}}</span>
+                <span>{{ subitem.title }}</span>
               </template>
             </el-menu-item>
           </el-submenu>
@@ -49,14 +51,15 @@ export default {
   components: {},
   data() {
     return {
+      menu: {},
       // 左侧菜单数据
       menuList: [],
       iconObjects: {
-        125: "el-icon-s-custom",
-        103: "el-icon-s-flag",
+        1: "el-icon-s-custom",
+        2: "el-icon-s-flag",
         101: "el-icon-s-shop",
-        102: "el-icon-s-order",
-        145: "el-icon-s-data",
+        137: "el-icon-s-order",
+        115: "el-icon-s-data",
       },
       isCollapse: false,
       activePath: "",
@@ -64,10 +67,11 @@ export default {
   },
   computed: {},
   created() {
-    // this.getMenuList();
-    // this.activePath = window.sessionStorage.getItem("activePath");
+    this.getMenuList();
+    this.activePath = window.sessionStorage.getItem("activePath");
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
     logout() {
       //清空token
@@ -77,10 +81,11 @@ export default {
     },
     // 获取所有菜单
     async getMenuList() {
-      const { data: res } = await this.$http.get("menus");
-      if (res.meta.status !== 200) return this.$message.error(res.meta.msg);
-      this.menuList = res.data;
-      console.log(res);
+      // const {data: res} = await this.$http.get("admin/menu/build");
+      const {data: res} = await this.$http.post("/admin/menu/tree", this.menu);
+      // console.log(res);
+      if (res.returnCode !== 1000) return this.$message.error(res.message);
+      this.menuList = res.dataInfo.childs;
     },
     // 点击切换菜单的折叠与展开
     toggleCollapse() {
@@ -98,6 +103,7 @@ export default {
 .home-container {
   height: 100%;
 }
+
 .el-header {
   background-color: #343a3d;
   display: flex;
@@ -106,23 +112,29 @@ export default {
   align-items: center;
   color: #fff;
   font-size: 20px;
+
   > div {
     display: flex;
     align-items: center;
+
     span {
       margin-left: 15px;
     }
   }
 }
+
 .el-aside {
   background-color: #313743;
+
   .el-menu {
     border-right: none;
   }
 }
+
 .el-main {
   background-color: #e9edf1;
 }
+
 .toggle-button {
   background-color: #475163;
   font-size: 10px;

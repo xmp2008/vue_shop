@@ -1,18 +1,18 @@
-
-
-
 <template>
   <div class="login">
-    <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-position="left" label-width="0px" class="login-form">
+    <el-form ref="loginFormRef" :model="loginForm" :rules="loginFormRules" label-position="left" label-width="0px"
+             class="login-form">
       <h3 class="title">
         XMP-ADMIN 后台管理系统
       </h3>
       <el-form-item prop="username">
-        <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号" prefix-icon="el-icon-user">
+        <el-input v-model="loginForm.username" type="text" auto-complete="off" placeholder="账号"
+                  prefix-icon="el-icon-user">
         </el-input>
       </el-form-item>
       <el-form-item prop="password">
-        <el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码" prefix-icon="el-icon-unlock">
+        <el-input v-model="loginForm.password" type="password" auto-complete="off" placeholder="密码"
+                  prefix-icon="el-icon-unlock">
         </el-input>
       </el-form-item>
       <el-form-item prop="code">
@@ -40,7 +40,8 @@
 </template>
 
 <script>
-import { encrypt } from "@/utils/rsaEncrypt";
+import {encrypt} from "@/utils/rsaEncrypt";
+
 export default {
   components: {},
   data() {
@@ -48,22 +49,23 @@ export default {
       loading: false,
       codeUrl: "",
       loginForm: {
-        username: "admin",
+        username: "MrBird",
         password: "123456",
         rememberMe: false,
         code: "",
         uuid: "",
       },
+
       // 表单验证规则对象
       loginFormRules: {
         // 验证用户是否合法
         username: [
-          { required: true, message: "请输入用户名", trigger: "blur" },
-          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+          {required: true, message: "请输入用户名", trigger: "blur"},
+          {min: 3, max: 10, message: "长度在 3 到 10 个字符", trigger: "blur"},
         ],
         // 验证密码是否合法
         password: [
-          { required: true, message: "请输入密码", trigger: "blur" },
+          {required: true, message: "请输入密码", trigger: "blur"},
           // { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
         ],
       },
@@ -73,7 +75,8 @@ export default {
   created() {
     this.getCode();
   },
-  mounted() {},
+  mounted() {
+  },
   methods: {
     restLoginForm() {
       console.log(this);
@@ -87,21 +90,26 @@ export default {
         this.loading = true;
         this.loginForm.password = encrypt(this.loginForm.password);
         // console.log(this.loginForm.password);
-        const { data: res } = await this.$http.post(
-          "/auth/login",
-          this.loginForm
+        const {data: res} = await this.$http.post(
+            "/auth/login",
+            this.loginForm
         );
         // console.log(res);
         if (res.returnCode !== 1000) return this.$message.error("登录失败!");
         this.$message.success("登录成功");
         window.sessionStorage.setItem("token", res.dataInfo);
+        // setTimeout(() => {
+        //   //需要延迟的代码 :3秒后延迟跳转到首页，可以加提示什么的
+        //   this.$router.push("/home");
+        //   //延迟时间：3秒
+        // }, 3000)
         this.$router.push("/home");
       });
     },
     async getCode() {
-      console.log("获取验证码");
-      const { data: res } = await this.$http.get("/auth/code");
-      console.log(res);
+      // console.log("获取验证码");
+      const {data: res} = await this.$http.get("/auth/code");
+      // console.log(res);
       if (res.returnCode !== 1000) return this.$message.error(res.message);
       // this.menuList = res.data;
       this.codeUrl = res.dataInfo.img;
@@ -116,6 +124,7 @@ export default {
   display: flex;
   justify-content: center;
 }
+
 .login {
   display: flex;
   justify-content: center;
@@ -124,6 +133,7 @@ export default {
   background-size: cover;
   background-color: #2b4b6b;
 }
+
 .title {
   margin: 0 auto 30px auto;
   text-align: center;
@@ -135,28 +145,34 @@ export default {
   background: #ffffff;
   width: 385px;
   padding: 25px 25px 5px 25px;
+
   .el-input {
     height: 38px;
+
     input {
       height: 38px;
     }
   }
+
   .input-icon {
     height: 39px;
     width: 14px;
     margin-left: 2px;
   }
 }
+
 .login-tip {
   font-size: 13px;
   text-align: center;
   color: #bfbfbf;
 }
+
 .login-code {
   width: 33%;
   display: inline-block;
   height: 38px;
   float: right;
+
   img {
     cursor: pointer;
     vertical-align: middle;
